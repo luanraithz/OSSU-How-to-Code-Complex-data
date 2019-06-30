@@ -74,14 +74,14 @@
 (define (numeric?    1s) (char-numeric?    (string-ref 1s 0)))
 
 
-(check-expect (match-char? "N" "1") true)
-(check-expect (match-char? "N" "a") false)
-(check-expect (match-char? "A" "1") false)
-(check-expect (match-char? "A" "a") true)
+(check-expect (char-match=? "N" "1") true)
+(check-expect (char-match=? "N" "a") false)
+(check-expect (char-match=? "A" "1") false)
+(check-expect (char-match=? "A" "a") true)
 
 ;; Pattern String -> Boolean
 ;; Produces true if the string matches the given pattern
-(define (match-char? pattern char)
+(define (char-match=? pattern char)
     (cond
         [(alphabetic? char) (string=? "A" pattern)]
         [(numeric? char) (string=? "N" pattern)]
@@ -106,7 +106,7 @@
         [(empty? listOfString) false]
         [else
             (and
-                (match-char? (first pattern) (first listOfString))
+                (char-match=? (first pattern) (first listOfString))
                 (pattern-match=? (rest pattern) (rest listOfString))
             )
         ]
