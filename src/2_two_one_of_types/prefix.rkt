@@ -43,7 +43,7 @@
 ;; Produces true of the first elements of the given lists are equal
 (define (first-are-equal? firstList secondList)
     (if (or (empty? firstList) (empty? secondList)) false
-    (equal? (first firstList) (first secondList))
+    (string=? (first firstList) (first secondList))
     ))
 
 (check-expect (prefix=? empty empty) true)
