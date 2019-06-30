@@ -108,19 +108,21 @@
 (check-expect (look-for-name--element "F10" D6) false)
 (check-expect (look-for-name--element "F2" D6) 2)
 (check-expect (look-for-name--element "F3" D5) 3)
+(check-expect (look-for-name--element "D4" D4) 0)
 
 
 ;; Element -> false | Number
 (define (look-for-name--element name element)
-  (cond [(= 0 (elt-data element)) (look-for-name--loe name (elt-subs element))]
-        [else (if (equal? (elt-name element) name) (elt-data element) false)]
-  ))
+  (if (equal? (elt-name element) name)
+        (elt-data element)
+        (look-for-name--loe name (elt-subs element))
+  )
+)
 
-;; ListOfElement -> falsa | Number
+;; ListOfElement -> false | Number
 (define (look-for-name--loe name loe)
   (cond [(empty? loe) false]
         [(number? (look-for-name--element name (first loe))) (look-for-name--element name (first loe))]
         [else (look-for-name--loe name (rest loe))]
         ))
-
 
