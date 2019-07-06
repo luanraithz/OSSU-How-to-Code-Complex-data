@@ -4,8 +4,6 @@
 
 (require 2htdp/image)
 
-(require 2htdp/image)
-
 ;; fractals-starter.rkt
 
 ; PROBLEM:
@@ -32,6 +30,13 @@
 
 
 (define CUTOFF 1)
+
+; Base case: (<= s CUTOFF)
+; 
+; Reduction step: (/ s 2)
+; 
+; Argument that repeated application of reduction step will eventually
+; reach the base case:
 
 ;; Number -> Image
 ;; produce a Sierpinski Triangle of the given size
@@ -65,6 +70,14 @@
 ; 
 ; Design a function to produce a Sierpinski carpet of size s.
 ; 
+; Base case: (<= d CUTOFF)
+; 
+; Reduction step: (/ d 3)
+; 
+; Argument that repeated application of reduction step will eventually
+; reach the base case:
+; As Long as cutoff is > 0 and d starts =>= 0, repeated division by 3
+; will eventually react base case
 
 (check-expect (scar CUTOFF) (square CUTOFF "outline" "red"))
 (check-expect (scar 3)
