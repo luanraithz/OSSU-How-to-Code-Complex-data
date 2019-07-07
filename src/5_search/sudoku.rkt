@@ -54,8 +54,7 @@
 
 (define B false) ;B stands for blank
 
-
-(define BD1 
+(define BD1
   (list B B B B B B B B B
         B B B B B B B B B
         B B B B B B B B B
@@ -66,7 +65,7 @@
         B B B B B B B B B
         B B B B B B B B B))
 
-(define BD2 
+(define BD2
   (list 1 2 3 4 5 6 7 8 9 
         B B B B B B B B B 
         B B B B B B B B B 
@@ -77,7 +76,7 @@
         B B B B B B B B B
         B B B B B B B B B))
 
-(define BD3 
+(define BD3
   (list 1 B B B B B B B B
         2 B B B B B B B B
         3 B B B B B B B B
@@ -115,8 +114,8 @@
         B 1 B B 5 B 6 B B
         B B 4 9 B B B B B
         B 9 B B B 7 5 B B
-        1 8 B 2 B B B B B 
-        B B B B B 6 B B B 
+        1 8 B 2 B B B B B
+        B B B B B 6 B B B
         B B 3 B B B B B 8
         B 6 B B 8 B B B 9
         B B 8 B 7 B B 3 1))
@@ -132,10 +131,10 @@
         7 6 1 3 8 2 4 5 9
         4 5 8 6 7 9 2 3 1))
 
-(define BD6                ;hardest ever? (Dr Arto Inkala)
-  (list B B 5 3 B B B B B 
+(define BD6                ;hardest ever? (Dr Arto Inkala) ( this one takes a little time to be solved )
+  (list B B 5 3 B B B B B
         8 B B B B B B 2 B
-        B 7 B B 1 B 5 B B 
+        B 7 B B 1 B 5 B B
         4 B B B B 5 3 B B
         B 1 B B 7 B B B 6
         B B 3 2 B B B 8 B
@@ -144,10 +143,10 @@
         B B B B B 9 7 B B))
 
 (define BD7                 ; no solution 
-  (list 1 2 3 4 5 6 7 8 B 
-        B B B B B B B B 2 
-        B B B B B B B B 3 
-        B B B B B B B B 4 
+  (list 1 2 3 4 5 6 7 8 B
+        B B B B B B B B 2
+        B B B B B B B B 3
+        B B B B B B B B 4
         B B B B B B B B 5
         B B B B B B B B 6
         B B B B B B B B 7
@@ -203,7 +202,6 @@
 
 (define UNITS (append ROWS COLS BOXES))
 
-
 ;; =================
 ;; Functions:
 
@@ -247,6 +245,7 @@
 
 ;; Board -> ( listof Board )
 ;; produces all possible next steps in a sudoku
+
 (define (next-boards--all bd)
   (local [ (define first-blank-index (index-of bd B))]
     (map (λ (v) (fill-square bd first-blank-index v)) ALL-VALS
@@ -255,6 +254,7 @@
 
 (check-expect (leave-duplicate-or-false (list 1 2 3 1 2 4)) (list 1 2))
 (check-expect (leave-duplicate-or-false (list 1 2 3 1 2 4 4)) (list 1 2 4))
+(check-expect (leave-duplicate-or-false (list 1 2 1 2 4 B B B)) (list 1 2 B B B))
 
 (define (leave-duplicate-or-false l)
   (foldr (λ (a b) (remove a b)) l ALL-VALS))
