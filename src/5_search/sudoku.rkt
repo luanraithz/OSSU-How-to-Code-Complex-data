@@ -270,7 +270,8 @@
   (empty?
     (filter any-number?
         (map (λ (u) (leave-duplicate-or-false
-            (map (λ (i) (read-square bd i)) u)))
+            (map (λ (i) (read-square bd i))
+                 u)))
              UNITS)
         )
     ))
