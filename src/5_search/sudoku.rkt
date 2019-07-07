@@ -154,6 +154,17 @@
         B B B B B B B B 8
         B B B B B B B B 9))
 
+(define BD8                 ; Invalid
+  (list 1 2 3 4 5 6 7 8 9
+        1 B B B B B B B B
+        B B B B B B B B B
+        B B B B B B B B B
+        B B B B B B B B B
+        B B B B B B B B B
+        B B B B B B B B B
+        B B B B B B B B B
+        B B B B B B B B B))
+
 
 ;; Positions of all the rows, columns and boxes:
 
@@ -193,8 +204,6 @@
 (define UNITS (append ROWS COLS BOXES))
 
 
-
-
 ;; =================
 ;; Functions:
 
@@ -204,8 +213,6 @@
 (check-expect (solve BD4) BD4s)
 (check-expect (solve BD5) BD5s)
 (check-expect (solve BD7) false)
-
-; (define (solve bd) false)
 
 (define (solve bd)
   (local
@@ -238,12 +245,13 @@
 (check-expect (solved? BD4s) true)
 (define (solved? bd) (andmap number? bd))
 
+;; Board -> ( listof Board )
+;; produces all possible next steps in a sudoku
 (define (next-boards--all bd)
-  (local [ (define index-first-blank (index-of bd B))]
-    (map (lambda (v) (fill-square bd index-first-blank v)) ALL-VALS
+  (local [ (define first-blank-index (index-of bd B))]
+    (map (λ (v) (fill-square bd first-blank-index v)) ALL-VALS
   )
 ))
-
 
 (check-expect (leave-duplicate-or-false (list 1 2 3 1 2 4)) (list 1 2))
 (check-expect (leave-duplicate-or-false (list 1 2 3 1 2 4 4)) (list 1 2 4))
@@ -252,25 +260,20 @@
   (foldr (λ (a b) (remove a b)) l ALL-VALS))
 
 ;; Board -> Boolean
-(define BD8
-  (list 1 2 3 4 5 6 7 8 9 
-        1 B B B B B B B B 
-        B B B B B B B B B 
-        B B B B B B B B B 
-        B B B B B B B B B
-        B B B B B B B B B
-        B B B B B B B B B
-        B B B B B B B B B
-        B B B B B B B B B))
-
+;; produces true if the board is valid so far
 (check-expect (valid? BD2) true)
 (check-expect (valid? BD8) false)
-
 
 (define (any-number? l) (ormap number? l))
 
 (define (valid? bd)
-  (empty? (filter any-number? (map (λ (u) (leave-duplicate-or-false (map (λ (i) (read-square bd i)) u))) UNITS))))
+  (empty?
+    (filter any-number?
+        (map (λ (u) (leave-duplicate-or-false
+            (map (λ (i) (read-square bd i)) u)))
+             UNITS)
+        )
+    ))
 
 ;; Board -> (listof Board)
 ;; produce list of valid next board from board
