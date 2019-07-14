@@ -49,8 +49,6 @@
 
 (define NOODLE-TAs (list SOBA UDON RAMEN))
 
-
-
 (define-struct assignment (ta slot))
 ;; Assignment is (make-assignment TA Slot)
 ;; interp. the TA is assigned to work the slot
@@ -136,6 +134,7 @@
   )
 
 ;; TA (listof Assignment) slot -> Boolean
+;; produces true if the given ta didn't attend to any previous requirement of this slot
 (define (can-attend-to-slot ta assignments slot)
   (zero? (length (filter (lambda (a) (and (eq? (assignment-ta a) ta) (= slot (assignment-slot a)))) assignments))
   ))
