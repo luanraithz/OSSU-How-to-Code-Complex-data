@@ -15,6 +15,98 @@
 ;  Then design a function called most-followers which determines which user in a Chirper Network is 
 ;  followed by the most people.
 
+(define-struct chirper-user (name note verified following))
+;; interp. name as user name, note as a description, verified, and a list of people that this user is following
+
+(define C1
+  (shared ((-Maria- (make-chirper-user "Maria" "Maria's description" true (list -Maria- -Ruan-)))
+           (-Ruan- (make-chirper-user "Ruan" "Ruan's description" false (list -Maria-)))
+           (-Mary- (make-chirper-user "Mary" "Mary's description" true (list -Mac- -Linus-)))
+           (-John- (make-chirper-user "John" "John's description" false (list -Ruan- -Mac-)))
+           (-Mac- (make-chirper-user "Mac" "Mac's description" true empty))
+           (-Linus- (make-chirper-user "Linus" "Linus's description" true (list -Maria-)))
+           )
+    (list -Maria- -Ruan- -Mary- -John- -Mac- -Linus-)
+    ))
+
+(define C2
+  (shared ((-Maria- (make-chirper-user "Maria" "Maria's description" true (list -Ruan-)))
+           (-Ruan- (make-chirper-user "Ruan" "Ruan's description" false (list -Mac- -Maria-)))
+           (-Mary- (make-chirper-user "Mary" "Mary's description" true (list -Mac- -Linus-)))
+           (-John- (make-chirper-user "John" "John's description" false (list -Ruan- -Mac-)))
+           (-Mac- (make-chirper-user "Mac" "Mac's description" true empty))
+           (-Linus- (make-chirper-user "Linus" "Linus's description" true (list -Maria-)))
+           )
+    (list -Maria- -Ruan- -Mary- -John- -Mac- -Linus-)
+    ))
+
+
+(check-expect (max-followers empty) "")
+(check-expect (max-followers C1) "Maria")
+(check-expect (max-followers C2) "Mac")
+
+
+
+;; THIS CODE IS REALLY BAD, A REFACTOR WOULD BE NICE
+
+;; I first thought of writing this structure as a graph, but
+;; it does make sense that more than one user has no followers
+;; and still following someone, so we wouldn't be able to reach him
+
+
+;; This part of the code isn't following the recipe either, again, a refactor would be nice
+
+;; AKA a todo to my self that I will never remember
+
+(define (max-followers l)
+  ;; acc is the result so far of the given array
+  (local [
+          (define (max-followers acc)
+            (local [(define (max-f acc c)
+                (cond [(empty? acc) c]
+                      [(< (accumulator-count c) (accumulator-count (first acc))) (max-f (rest acc) (first acc))]
+                      [else (max-f (rest acc) c)]
+                  ))]
+                (max-f acc (make-accumulator "" -1))
+              )
+            )
+        (define (increase-by-one acc c)
+          (cond [(empty? acc) empty]
+              [else
+                (if
+                  (eq? (chirper-user-name c) (accumulator-chirper (first acc)))
+                  (cons (make-accumulator (chirper-user-name c) (add1 (accumulator-count (first acc)))) (rest acc))
+                  (cons (first acc) (increase-by-one (rest acc) c))
+                  )
+                    ])
+        )
+        (define (add-to-acc acc c)
+          (local [
+                  (define (already-in-acc? c acc) (not (false? (findf (lambda (a) (eq? (chirper-user-name c) (accumulator-chirper a))) acc))))
+                  (define (add acc1 l)
+                    (cond [(empty? l) acc1]
+                          [(already-in-acc? (first l) acc1) (add (increase-by-one acc1 (first l)) (rest l))]
+                          [else (add (cons (make-accumulator (chirper-user-name (first l)) 1) acc1) (rest l))])
+                    )
+                ]
+          (add acc (chirper-user-following c))
+          )
+        )
+
+        (define-struct accumulator (chirper count))
+        ;; interp chiper as the key of, of a map with the count of each user so far
+          (define (fn-for-chirper l acc)
+            (cond
+              [(empty? l) acc]
+              [else (fn-for-chirper (rest l) (add-to-acc acc (first l)))]
+              )
+            )
+          ]
+    (accumulator-chirper (max-followers (fn-for-chirper l empty)))
+    )
+  )
+
+
 
 ;  PROBLEM 2:
 ;  
